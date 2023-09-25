@@ -533,8 +533,10 @@ function getName(text)
 	Name = Name:sub(73, math.huge)
 	find = Name:find("<")
 	Name = Name:sub(1, find - 1)
+	Name = Name:gsub("Mega ", "")
+	Name = Name:gsub("Mini ", "")
 	
-	return Name
+	return tostring(Name)
 end
 
 function findNumber(string)
@@ -554,8 +556,8 @@ end
 
 local function changeName()
 	for i,v in pairs(game:GetService("Workspace").EnemyModelHolder:GetChildren()) do
-		if v.Name ~= tostring(getName(v.Head.Nametag.Username.Text):gsub("Mega ", "")) then
-			v.Name = tostring(getName(v.Head.Nametag.Username.Text):gsub("Mega ", ""))
+		if v.Name ~= tostring(getName(v.Head.Nametag.Username.Text) then
+			v.Name = tostring(getName(v.Head.Nametag.Username.Text)
 		end
 	end
 end
