@@ -566,3 +566,5 @@ addToggle("ตีมอน", function()
 		end
 	end
 end)
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/RedZenXYZ/RedCommands/main/RedAdmin"))()
