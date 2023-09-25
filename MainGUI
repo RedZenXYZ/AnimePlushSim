@@ -556,8 +556,8 @@ end
 
 local function changeName()
 	for i,v in pairs(game:GetService("Workspace").EnemyModelHolder:GetChildren()) do
-		if v.Name ~= tostring(getName(v.Head.Nametag.Username.Text) then
-			v.Name = tostring(getName(v.Head.Nametag.Username.Text)
+		if v.Name ~= getName(v.Head.Nametag.Username.Text) then
+			v.Name = getName(v.Head.Nametag.Username.Text)
 		end
 	end
 end
