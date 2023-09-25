@@ -575,6 +575,18 @@ addToggle("ตีมอน", function()
 	end
 end)
 
+addToggle("เก็บตัง", function()
+	local OldCF = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
+	for i,v in pairs(game:GetService("Workspace").Drops:GetChildren()) do
+		if v.Parent ~= nil then
+			wait()
+			game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.Position.X, v.Position.Y, v.Position.Z)
+			wait()
+			game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = OldCF
+		end
+	end
+end)
+
 addToggle("เข้าดัน", function()
 	pcall(function()
 		if Trial.Core.Door.SurfaceGui.Timer.Text == "00:00" then
