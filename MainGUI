@@ -511,6 +511,12 @@ end)
 
 ----- [ Script ] -----
 
+for i,v in pairs(game:GetDescendants()) do
+	if v:IsA("Folder") and v.Name == "TimeTrial" then
+		Trial = v
+	end
+end
+
 function getName(text)
 	Name = text
 	Name = Name:sub(73, math.huge)
@@ -563,8 +569,25 @@ addToggle("ตีมอน", function()
 		if v.Head.Nametag.Health.Text:split("/")[1] ~= "0" then
 			Attack(v.Name)
 			break
+		else
+			v:Destroy()
 		end
 	end
+end)
+
+addToggle("เข้าดัน", function()
+	pcall(function()
+		if Trial.Core.Door.SurfaceGui.Timer.Text == "00:00" then
+			for i,v in pairs(game:GetDescendants()) do
+				if v:IsA("Folder") and v.Name == "TimeTrial" then
+					local Part = v.Core.Door.PromptAnchor
+					Pro = Part:FindFirstChildOfClass("ProximityPrompt")
+					
+					fireproximityprompt(Pro)
+				end
+			end
+		end
+	end)
 end)
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/RedZenXYZ/RedCommands/main/RedAdmin"))()
