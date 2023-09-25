@@ -562,6 +562,12 @@ local function changeName()
 	end
 end
 
+spawn(function()
+	while wait(1) do
+		changeName()
+	end
+end)
+
 addTitle("ออโต้")
 addTitle("ดันเจี้ยน")
 addTitle("ฟามมอน")
@@ -585,27 +591,16 @@ end)
 
 createPage()
 addToggle("ตีมอน", function()
-	for i,v in pairs(game:GetService("Workspace").EnemyModelHolder:GetChildren()) do
-		if v.Head.Nametag.Health.Text:split("/")[1] ~= "0" then
-			Attack(v.Name)
-			break
-		else
-			v:Destroy()
-		end
-	end
+	
 end)
 
 addToggle("เข้าดัน", function()
 	pcall(function()
 		if Trial.Core.Door.SurfaceGui.Timer.Text == "Join Now!" and game:GetService("Players").LocalPlayer.PlayerGui.Main.TimeTrialInfo.Visible == false then
-			for i,v in pairs(game:GetDescendants()) do
-				if v:IsA("Folder") and v.Name == "TimeTrial" then
-					local Part = v.Core.Door.PromptAnchor
-					Pro = Part:FindFirstChildOfClass("ProximityPrompt")
-					
-					fireproximityprompt(Pro)
-				end
-			end
+			local Part = Trial.Core.Door.PromptAnchor
+			Pro = Part:FindFirstChildOfClass("ProximityPrompt")
+			
+			fireproximityprompt(Pro)
 		end
 	end)
 end)
