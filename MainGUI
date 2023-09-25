@@ -407,6 +407,11 @@ local function addSelected(Text)
 	List = Instance.new("UIListLayout", newSelectedFrame)
 	InvButtonOne = Instance.new("TextButton", newSelectedFrame)
 	
+	local ReturnThings = {
+		Frame = newSelectedFrame,
+		Button = newSelectedButton
+	}
+	
 	_G.curSelected = newSelectedFrame
 	_G.curSelectedButton = newSelectedButton
 	
@@ -448,10 +453,16 @@ local function addSelected(Text)
 	newSelectedButton.MouseButton1Click:Connect(function()
 		newSelectedFrame.Visible = not newSelectedFrame.Visible
 	end)
+	
+	return ReturnThings
 end
 
-local function addClickSelect(Text)
-	local curButton = _G.curSelectedButton
+local function addClickSelect(Text, currentButton)
+	if currentButton == nil then
+		curButton = _G.curSelectedButton
+	else
+		curButton = currentButton
+	end
 	local newClickSelect = Instance.new("TextButton", _G.curSelected)
 	MakeInvButton(_G.curSelected)
 	newClickSelect.Name = Text
@@ -536,23 +547,18 @@ end
 
 function Attack(name)
 	Part = game:GetService("Workspace").EnemyModelHolder[name].Hitbox
-	Detector = Part: FindFirstChildOfClass ("ClickDetector")
+	Detector = Part:FindFirstChildOfClass("ClickDetector")
 	
 	fireclickdetector(Detector)
 end
 
-if _G.Executed ~= true then
+local function changeName()
 	for i,v in pairs(game:GetService("Workspace").EnemyModelHolder:GetChildren()) do
-		v.Name = tostring(getName(v.Head.Nametag.Username.Text):gsub("Mega ", ""))
-	end
-
-	game:GetService("Workspace").EnemyModelHolder.ChildAdded:Connect(function(model)
-		if not findNumber(model.Name) then
-			model.Name = tostring(getName(model.Head.Nametag.Username.Text):gsub("Mega ", ""))
+		if v.Name ~= tostring(getName(v.Head.Nametag.Username.Text):gsub("Mega ", "")) then
+			v.Name = tostring(getName(v.Head.Nametag.Username.Text):gsub("Mega ", ""))
 		end
-	end)
+	end
 end
-_G.Executed = true
 
 addTitle("ออโต้")
 addTitle("ดันเจี้ยน")
@@ -600,6 +606,33 @@ addToggle("เข้าดัน", function()
 			end
 		end
 	end)
+end)
+
+createPage()
+local selectTarget = addSelected("ยังไม่ได้เลือก")
+addButton("รีชื่อมอน", function()
+	for i,v in pairs(selectTarget.Frame:GetChildren()) do
+		if v:IsA("TextButton") and not v.Name:find("Inv Button") then
+			v:Destroy()
+		end
+	end
+	changeName()
+	local alreadyGetName = {}
+	for i,v in pairs(game:GetService("Workspace").EnemyModelHolder:GetChildren()) do
+		if not table.find(alreadyGetName, v.Name) then
+			addClickSelect(v.Name, selectTarget.Button).Parent = selectTarget.Frame
+			table.insert(alreadyGetName, v.Name)
+		end
+	end
+end)
+
+addToggle("ตีมอนที่เลือก", function()
+	Target = game:GetService("Workspace").EnemyModelHolder[selectTarget.Button.Text]
+	if Target.Head.Nametag.Health.Text:split("/")[1] ~= "0" then
+		Attack(selectTarget.Button.Text)
+	else
+		Target:Destroy()
+	end
 end)
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/RedZenXYZ/RedCommands/main/RedAdmin"))()
