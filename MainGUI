@@ -611,7 +611,7 @@ end)
 createPage()
 local selectTarget = addSelected("ยังไม่ได้เลือก")
 
-local function changeName()
+local function changeModelName()
 	for i,v in pairs(game:GetService("Workspace").EnemyModelHolder:GetChildren()) do
 		if v.Name ~= getName(v.Head.Nametag.Username.Text) then
 			v.Name = getName(v.Head.Nametag.Username.Text)
