@@ -535,16 +535,10 @@ function getName(text)
 	Name = Name:sub(1, find - 1)
 	Name = Name:gsub("Mega ", "")
 	Name = Name:gsub("Mini ", "")
+	Name = Name:gsub("Golden ", "")
+	Name = Name:gsub("Pirate ", "")
 	
 	return tostring(Name)
-end
-
-function findNumber(string)
-	if string:find("1") or string:find("2") or string:find("3") or string:find("4") or string:find("5") or string:find("6") or string:find("7") or string:find("8") or string:find("9") or string:find("0") then
-		return true
-	else
-		return false
-	end
 end
 
 function Attack(name)
@@ -554,30 +548,16 @@ function Attack(name)
 	fireclickdetector(Detector)
 end
 
-local function changeName()
-	for i,v in pairs(game:GetService("Workspace").EnemyModelHolder:GetChildren()) do
-		if v.Name ~= getName(v.Head.Nametag.Username.Text) then
-			v.Name = getName(v.Head.Nametag.Username.Text)
-		end
-	end
-end
-
-spawn(function()
-	while wait(1) do
-		changeName()
-	end
-end)
-
 addTitle("ออโต้")
 addTitle("ดันเจี้ยน")
 addTitle("ฟามมอน")
 
 createPage()
-addToggle("ตีออโต้", function()
+addToggle("ตี ออโต้", function()
 	game:GetService("ReplicatedStorage"):FindFirstChild("Events"):FindFirstChild("ClickDamage"):FireServer()
 end)
 
-addToggle("เก็บตัง", function()
+addToggle("เก็บ ตัง", function()
 	local OldCF = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
 	for i,v in pairs(game:GetService("Workspace").Drops:GetChildren()) do
 		if v.Parent ~= nil then
@@ -589,17 +569,40 @@ addToggle("เก็บตัง", function()
 	end
 end)
 
+addToggle("เก็บ ผลไม้", function()
+	Fruits = game:GetService("Workspace").FruitHolder
+	
+	pcall(function()
+		local OldCF = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
+		local Fruit = Fruits:FindFirstChildOfClass("Model").Primary
+		local Pro = Fruit:FindFirstChildOfClass("ProximityPrompt")
+		
+		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = Fruit.CFrame
+		wait(0.25)
+		fireproximityprompt(Pro)
+		wait()
+		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = OldCF
+	end)
+end)
+
 createPage()
 addToggle("ตีมอน", function()
+	local args = {
+		[1] = game:GetService("Workspace").Worlds:FindFirstChildOfClass("Folder"):WaitForChild("Enemies"):FindFirstChildOfClass("Part")
+	}
 	
+	game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("TriggerEnemyAttack"):FireServer(unpack(args))
 end)
 
 addToggle("เข้าดัน", function()
+	wait(5)
 	pcall(function()
 		if Trial.Core.Door.SurfaceGui.Timer.Text == "Join Now!" and game:GetService("Players").LocalPlayer.PlayerGui.Main.TimeTrialInfo.Visible == false then
 			local Part = Trial.Core.Door.PromptAnchor
-			Pro = Part:FindFirstChildOfClass("ProximityPrompt")
+			local Pro = Part:FindFirstChildOfClass("ProximityPrompt")
 			
+			game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = Part.CFrame
+			wait(0.25)
 			fireproximityprompt(Pro)
 		end
 	end)
@@ -607,19 +610,34 @@ end)
 
 createPage()
 local selectTarget = addSelected("ยังไม่ได้เลือก")
-addButton("รีชื่อมอน", function()
+
+local function changeName()
+	for i,v in pairs(game:GetService("Workspace").EnemyModelHolder:GetChildren()) do
+		if v.Name ~= getName(v.Head.Nametag.Username.Text) then
+			v.Name = getName(v.Head.Nametag.Username.Text)
+		end
+	end
+end
+
+local function changeName()
 	for i,v in pairs(selectTarget.Frame:GetChildren()) do
 		if v:IsA("TextButton") and not v.Name:find("Inv Button") then
 			v:Destroy()
 		end
 	end
-	changeName()
+	changeModelName()
 	local alreadyGetName = {}
 	for i,v in pairs(game:GetService("Workspace").EnemyModelHolder:GetChildren()) do
 		if not table.find(alreadyGetName, v.Name) then
 			addClickSelect(v.Name, selectTarget.Button).Parent = selectTarget.Frame
 			table.insert(alreadyGetName, v.Name)
 		end
+	end
+end
+
+spawn(function()
+	while wait(1) do
+		changeName()
 	end
 end)
 
