@@ -528,6 +528,23 @@ for i,v in pairs(game:GetDescendants()) do
 	end
 end
 
+local GC = getconnections or get_signal_cons
+if GC then
+	for i,v in pairs(GC(game:GetService("Players").LocalPlayer.Idled)) do
+		if v["Disable"] then
+			v["Disable"](v)
+		elseif v["Disconnect"] then
+			v["Disconnect"](v)
+		end
+	end
+else
+	game:GetService("Players").LocalPlayer.Idled:Connect(function()
+		local VirtualUser = game:GetService("VirtualUser")
+		VirtualUser:CaptureController()
+		VirtualUser:ClickButton2(Vector2.new())
+	end)
+end
+
 function getName(text)
 	Name = text
 	Name = Name:sub(73, math.huge)
@@ -567,10 +584,9 @@ addToggle("เก็บ ตัง", function()
 end)
 
 addToggle("เก็บ ผลไม้", function()
-	Fruits = game:GetService("Workspace").FruitHolder
-	
 	pcall(function()
 		local OldCF = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
+		local Fruits = game:GetService("Workspace").FruitHolder
 		local Fruit = Fruits:FindFirstChildOfClass("Model").Primary
 		local Pro = Fruit:FindFirstChildOfClass("ProximityPrompt")
 		
@@ -585,7 +601,7 @@ end)
 createPage()
 addToggle("ตีมอน", function()
 	local args = {
-		[1] = game:GetService("Workspace").Worlds:FindFirstChild("TimeTrial"):FindFirstChild("Enemies"):FindFirstChildOfClass("Part")
+		[1] = Trial:FindFirstChild("Enemies"):FindFirstChildOfClass("Part")
 	}
 	
 	game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("TriggerEnemyAttack"):FireServer(unpack(args))
@@ -604,13 +620,32 @@ addToggle("เข้าดัน", function()
 			game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = Part.CFrame
 			wait(0.5)
 			fireproximityprompt(Pro)
-			wait()
+			wait(5)
 			repeat
 				wait(1)
 			until game:GetService("Players").LocalPlayer.PlayerGui.Main.TimeTrialInfo.Visible == false
 			game:GetService("ReplicatedStorage").Events.ChangeWorld:FireServer(currentWorld)
 		end
 	end)
+end)
+
+addToggle("ไปที่ห้องล่าสุด", function()
+	local Rooms = workspace.Worlds.TimeTrial.Rooms
+	local Numbers = {}
+	for i,v in pairs(Rooms:GetChildren()) do
+		table.insert(Numbers, tonumber(v.Name))
+	end
+	
+	local LastestRoom = tostring(math.max(unpack(Numbers)))
+	local Part = game:GetService("Workspace").Worlds.TimeTrial.Rooms[LastestRoom - 1].Door.PromptAnchor
+	local Pro = Part:FindFirstChildOfClass("ProximityPrompt")
+	local currentRoom = game:GetService("Players").LocalPlayer.PlayerGui.Main.TimeTrialInfo.Room.Text:gsub("%D+", "")
+	
+	if currentRoom ~= LastestRoom then
+		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = Part.CFrame * CFrame.new(0, 0, -10)
+		wait(0.25)
+		fireproximityprompt(Pro)
+	end
 end)
 
 createPage()
