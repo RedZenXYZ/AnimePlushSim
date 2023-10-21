@@ -528,6 +528,7 @@ for i,v in pairs(game:GetDescendants()) do
 	end
 end
 
+if not game:GetService("CoreGui"):FindFirstChild("Codex") then
 local GC = getconnections or get_signal_cons
 if GC then
 	for i,v in pairs(GC(game:GetService("Players").LocalPlayer.Idled)) do
@@ -543,6 +544,7 @@ else
 		VirtualUser:CaptureController()
 		VirtualUser:ClickButton2(Vector2.new())
 	end)
+end
 end
 
 function getName(text)
